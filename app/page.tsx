@@ -236,7 +236,7 @@ function UploadPanel() {
                 </Dialog>
             </>}
             <div className={"flex w-full h-full"}>
-                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[36rem] max-h-[36rem]'} overflow-auto px-6 `}>
+                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[36rem] max-h-[36rem]'}  transition-none overflow-auto px-6 `}>
                     <div className={"flex flex-col gap-4"}>
                         <div className={"flex gap-2 items-center"}>
                             <VeganIcon size={16} strokeWidth={2}/>
