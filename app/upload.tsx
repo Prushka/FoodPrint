@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import {PropagateLoader} from "react-spinners";
 import {Food, foodStore, Ingredient} from "@/app/states";
-import {Tag} from "@/app/page";
+import Tag from "@/app/tag";
 import Block from "@/app/block";
 import {Button} from "@/components/ui/button";
 import {useRecoilState} from "recoil";

@@ -23,7 +23,7 @@ export interface Ingredient {
     nutrition: NutritionInfo[];
 }
 
-export interface Tag {
+export interface FoodTag {
     tag: string;
     condition: number;
 }
@@ -41,7 +41,7 @@ export interface Food {
     similar_users: number,
     percentile: number,
     recommended: string[],
-    tags?: Tag[]
+    tags?: FoodTag[]
 }
 
 const nutrition = [

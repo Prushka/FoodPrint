@@ -3,17 +3,13 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
 import ImageClassifier from "@/app/upload";
 import Header from "@/app/header";
 import {
-    AppleIcon, BetweenHorizonalStartIcon, CameraIcon,
+    AppleIcon, BetweenHorizonalStartIcon,
     ChevronRight,
     CloudUploadIcon,
     CookieIcon, LeafyGreenIcon,
@@ -25,10 +21,11 @@ import Score, {ScoreSmall} from "@/app/score";
 import Block, {BlockMetrics, Row} from "@/app/block";
 import {Nutrition} from "@/app/nutrition";
 import {Sparkle} from "@/app/sparkle";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useRecoilState} from "recoil";
-import {dateStore, Food, foodStore, type Tag} from "@/app/states";
+import {dateStore, Food, foodStore, type FoodTag} from "@/app/states";
 import {formatToCamelCase, getTodayFormatted, unixToDateFormat} from "@/app/utils";
+import Tag from "@/app/tag";
 
 export default function Home() {
     const [foods, setFoods] = useRecoilState(foodStore);
@@ -111,7 +108,7 @@ function deduplicateArray(arr: string[]) {
     });
 }
 
-function deduplicateTagArray(arr: Tag[]) {
+function deduplicateTagArray(arr: FoodTag[]) {
     const seen = new Set();
     return arr.filter(item => {
         const camelCased = formatToCamelCase(item.tag);
@@ -300,7 +297,7 @@ function SummaryPanel() {
     const macronutrients = selectedFoods.reduce((acc, food) => acc + food.macronutrients, 0) / selectedFoods.length;
     const micronutrients = selectedFoods.reduce((acc, food) => acc + food.micronutrients, 0) / selectedFoods.length;
     // @ts-ignore
-    const tags: Tag[] = deduplicateTagArray(selectedFoods.reduce((acc, food) => {
+    const tags: FoodTag[] = deduplicateTagArray(selectedFoods.reduce((acc, food) => {
         if (food.tags) {
             return [...acc, ...food.tags];
         }
@@ -351,15 +348,3 @@ function SummaryPanel() {
     )
 }
 
-export function Tag({className, tag, condition, style, large = false, onMouseEnter, onMouseLeave}: any) {
-    return (
-        <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}
-             style={style} className={`${condition == 0 ? 'bg-[#331E25]' : condition == 1 ? 'bg-[#2E2C1D]' :
-            condition == 2 ?
-                'bg-[#1D2C2B]' : 'bg-neutral-800'} 
-                 ${condition == 0 ? 'text-[#FB6591]' : condition == 1 ? 'text-[#CBC160]' : condition == 2 ? 'text-[#5CC8C3]' :
-            'text-neutral-200'}
-                 rounded-md ${large ? 'p-2 px-3 text-sm' : 'p-1 px-2 text-xs'}  ${className}`}
-        >{tag}</div>
-    )
-}
