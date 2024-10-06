@@ -18,9 +18,12 @@ html, body, #root {
   font-family: "Karla", sans-serif;
   color: #151515;
   scroll-behavior: smooth;
-  letter-spacing: 0.03125rem;
-  background-color: #fff;
+  background-color: #08090A;
   height: 100%;
+}
+
+button, a, div {
+  transition: all 0.25s cubic-bezier(.32,.08,.24,1);
 }
 
 @layer utilities {
@@ -33,29 +36,12 @@ html, body, #root {
   }
 }
 
-header p, span, button, a {
-  color: white;
-  transition: color 0.2s ease-in-out;
-}
-
-a, button {
-  transition: color 0.2s ease-in-out;
+button:focus {
+  outline: none;
 }
 
 a:hover, button:hover {
-  color: var(--color-pink);
-}
-
-.image-container:hover {
-  transform: perspective(1px) scale(0.98) translateZ(0);
-}
-
-.image-container {
-  transition: all 0.3s ease-in-out;
-}
-
-button:focus {
-  outline: none;
+  color: white;
 }
 
 @layer base {
