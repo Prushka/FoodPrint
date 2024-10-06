@@ -11,6 +11,9 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import {useMemo} from "react";
+import {useRecoilState} from "recoil";
+import {aggregateNutrition, dateStore, foodStore} from "@/app/states";
+import {unixToDateFormat} from "@/app/page";
 
 const nutrition = [
     {"name": "Protein", "short": "Prot"},
@@ -54,17 +57,19 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export function Nutrition({cd = sample}: { cd?: any }) {
-    const chartData = useMemo(() => {
-        return cd.map((data: any) => {
-            return {
-                nutrition: data.nutrition,
-                intake: data.intake,
-                missing: data.intake < 85 ? 85 - data.intake : 0,
-                excess: data.intake > 100 ? data.intake - 100 : 0,
-            }
-        })
-    }, [cd])
+export function Nutrition() {
+
+    const [foods] = useRecoilState(foodStore);
+    const [selectedDate, setSelectedDate] = useRecoilState(dateStore);
+    const selectedFoods = foods.filter((food) => unixToDateFormat(food.date) === selectedDate);
+    const chartData = Object.entries(aggregateNutrition(selectedFoods)).map(([key, value]) => {
+        return {
+            nutrition: key,
+            intake: value,
+            missing: value < 85 ? 85 - value : 0,
+            excess: value > 100 ? value - 100 : 0,
+        }
+    });
     return (
         <ChartContainer config={chartConfig} className={"h-[17rem] w-full col-span-8"}>
             <BarChart accessibilityLayer data={chartData}>

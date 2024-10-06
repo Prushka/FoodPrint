@@ -27,7 +27,7 @@ import {Nutrition} from "@/app/nutrition";
 import {Sparkle} from "@/app/sparkle";
 import {useState} from "react";
 import {useRecoilState} from "recoil";
-import {dateStore, foodStore, type Tag} from "@/app/states";
+import {dateStore, Food, foodStore, type Tag} from "@/app/states";
 
 export default function Home() {
     return (
@@ -69,7 +69,10 @@ export function getTodayFormatted() {
     return today.toISOString().split('T')[0];
 }
 
-function unixToDateFormat(unixTimestamp: number) {
+export function unixToDateFormat(unixTimestamp?: number) {
+    if (!unixTimestamp) {
+        return '';
+    }
     // Create a new Date object, converting seconds to milliseconds
     const date = new Date(unixTimestamp * 1000);
 
@@ -79,7 +82,6 @@ function unixToDateFormat(unixTimestamp: number) {
 
 function Calender() {
     const days = getLast7Days();
-    const today = getTodayFormatted();
     const [foods] = useRecoilState(foodStore);
     const [selectedDate, setSelectedDate] = useRecoilState(dateStore);
     return (
@@ -104,10 +106,31 @@ function Calender() {
     )
 }
 
+function deduplicateArray(arr: string[]) {
+    const seen = new Set();
+    return arr.filter(item => {
+        const camelCased = formatToCamelCase(item);
+        if (!seen.has(camelCased)) {
+            seen.add(camelCased);
+            return true;
+        }
+        return false;
+    });
+}
+
 function DetailsPanel() {
-    const recommendedDiet = [
-        "apple", "grape"
-    ]
+    const [foods] = useRecoilState(foodStore);
+    const [selectedDate, setSelectedDate] = useRecoilState(dateStore);
+    const selectedFoods = foods.filter((food) => unixToDateFormat(food.date) === selectedDate);
+    // @ts-ignore
+    const recommendedDiet : string[] = deduplicateArray(selectedFoods.reduce((acc, food) => {
+        if (food.recommended) {
+            return [...acc, ...food.recommended];
+        }
+        return acc;
+    }, []));
+    const similarUsers = selectedFoods.reduce((acc, food) => acc + food.similar_users, 0) / selectedFoods.length;
+    const percentile = selectedFoods.reduce((acc, food) => acc + food.percentile, 0) / selectedFoods.length;
     return (
         <div className={"flex gap-2 items-center p-6 col-span-2"}>
             <Block className={"min-h-[20rem] px-6"}>
@@ -122,12 +145,12 @@ function DetailsPanel() {
                             <Row className={"py-2"} title={"Users with similar diet"}
                                  icon={<UsersRoundIcon size={16} strokeWidth={2}/>}
                                  content={<p>
-                                     22
+                                     {similarUsers}
                                      <span className={"text-neutral-200 text-sm"}>%</span></p>}/>
                             <Row className={"border-t border-neutral-800 py-2"} title={"Percentile Nutrition"}
                                  icon={<BetweenHorizonalStartIcon size={16} strokeWidth={2}/>}
                                  content={<p>
-                                     24
+                                     {percentile}
                                      <span className={"text-neutral-200 text-sm"}>th</span></p>}/>
                             <Row className={"border-t border-neutral-800 py-2"} title={
                                 <div className={"flex gap-1"}>Recommended Diet
@@ -142,9 +165,9 @@ function DetailsPanel() {
                                 </div>
                             } icon={<LeafyGreenIcon size={16} strokeWidth={2}/>}
                                  content={
-                                     <div className={"flex gap-2 mt-1 flex-wrap"}>
+                                     <div className={"flex gap-2 mt-2 flex-wrap"}>
                                          {recommendedDiet.map((item, index) => (
-                                             <Tag key={`${index}`} tag={item} condition={3}/>
+                                             <Tag key={`${index}`} tag={formatToCamelCase(item)} condition={3}/>
                                          ))}
                                      </div>
                                  }/>
@@ -159,33 +182,105 @@ function DetailsPanel() {
 
 function UploadPanel() {
     const [open, setOpen] = useState(false)
+    const [open2, setOpen2] = useState(false)
+    const [foods] = useRecoilState(foodStore);
+    const [selectedDate, setSelectedDate] = useRecoilState(dateStore);
+    const selectedFoods = foods.filter((food) => unixToDateFormat(food.date) === selectedDate);
+    const today : string = getTodayFormatted();
+    const [selectedFood, setSelectedFood] = useState<Food | null>(null);
     return (
-        <>
-            <div
-                onClick={() => setOpen(true)}
-                className="text-neutral-400 flex flex-col gap-2 justify-center items-center border-r border-neutral-800 hover:text-white cursor-pointer">
-                <CloudUploadIcon size={56} strokeWidth={2}/>
-                <p className={"text-lg"}>Upload or take a photo of your meal</p>
-                <p className={"text-sm"}>We'll analyze it for you!</p>
+        <div className={"flex flex-col gap-9 border-r border-neutral-800 p-6"}>
+            {today === selectedDate && <>
+                <div
+                    onClick={() => setOpen(true)}
+                    className="border border-dashed border-neutral-600 p-6
+                    text-neutral-400 flex flex-col gap-2 justify-center items-center hover:text-white cursor-pointer rounded-md">
+                    <CloudUploadIcon size={56} strokeWidth={2}/>
+                    <p className={"text-lg"}>Upload or take a photo of your meal</p>
+                    <p className={"text-sm"}>We'll analyze it for you!</p>
+                </div>
+                <Dialog onOpenChange={setOpen} open={open}>
+                    <DialogContent className="max-w-none w-[90vw] h-[90vh] overflow-auto text-white flex flex-col">
+                        <DialogHeader>
+                            <DialogTitle>Upload your meal!</DialogTitle>
+                            <DialogDescription>
+                                Find out what's in your meal and how it contributes to your long-term food print.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex flex-col justify-center items-center w-full h-full">
+                            <ImageClassifier closeDialog={() => {
+                                setOpen(false)
+                            }}/>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+            </>}
+            <div className={"flex w-full h-full"}>
+                <Block className={"min-h-[20rem] px-6 "}>
+                    <div className={"flex flex-col gap-4"}>
+                        <div className={"flex gap-2 items-center"}>
+                            <VeganIcon size={16} strokeWidth={2}/>
+                            <div className={"text-lg"}>Your Meal on {selectedDate}</div>
+                        </div>
+                        {selectedFoods.map((food, index) => (
+                            <div key={index}
+                                 onClick={() => {
+                                     setSelectedFood(food);
+                                     setOpen2(true);
+                                 }}
+                                 className={"cursor-pointer flex gap-2 items-center w-full justify-between border border-neutral-800 p-2 px-4 rounded-md " +
+                                     "hover:bg-neutral-900 hover:border-neutral-700"}>
+                                <img src={`https://sparkle-t.muddy.ca/static/pfp/${food?.img}`} alt={food.food} className={"w-24 h-16 rounded-md object-cover"}/>
+                                <div className={"flex flex-col gap-2 items-end"}>
+                                    <div
+                                        className={"text-sm font-medium text-neutral-200"}>{formatToCamelCase(food.food)}</div>
+                                    <div className={"flex gap-1"}>{food.ingredients.map((ingredient, index) => (
+                                <Tag key={index} tag={formatToCamelCase(ingredient.ingredient)} condition={3}/>
+                            ))}
+                                <Tag key={index} tag={`${food.calories} cal`} condition={3}/>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-            <Dialog onOpenChange={setOpen} open={open}>
-                <DialogContent className="max-w-none w-[90vw] h-[90vh] text-white flex flex-col">
+            <Dialog onOpenChange={setOpen2} open={open2}>
+                <DialogContent className="max-w-none w-[90vw] h-[90vh] overflow-auto text-white flex flex-col">
                     <DialogHeader>
-                        <DialogTitle>Upload your meal!</DialogTitle>
+                        <DialogTitle>{unixToDateFormat(selectedFood?.date)} {formatToCamelCase(unixToTimeOfDay(selectedFood?.date))}</DialogTitle>
                         <DialogDescription>
-                            Find out what's in your meal and how it contributes to your long-term food print.
+                            {selectedFood?.food}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col justify-center items-center w-full h-full">
-                        <ImageClassifier closeDialog={() => {
+                        <ImageClassifier
+                            read={selectedFood}
+                            closeDialog={() => {
                             setOpen(false)
                         }}/>
                     </div>
                 </DialogContent>
             </Dialog>
-        </>
-
+        </Block>
+        </div>
+        </div>
     );
+}
+function unixToTimeOfDay(unixTimestamp) {
+    // Create a Date object from the Unix timestamp (convert seconds to milliseconds)
+    const date = new Date(unixTimestamp * 1000);
+
+    // Get the hour in 24-hour format
+    const hour = date.getHours();
+
+    if (hour >= 5 && hour < 12) {
+        return 'morning';
+    } else if (hour >= 12 && hour < 13) {
+        return 'noon';
+    } else if (hour >= 13 && hour < 18) {
+        return 'afternoon';
+    } else {
+        return 'night';
+    }
 }
 
 export function formatToCamelCase(str: string) {
@@ -208,12 +303,13 @@ function SummaryPanel() {
     const calories = selectedFoods.reduce((acc, food) => acc + food.calories, 0);
     const macronutrients = selectedFoods.reduce((acc, food) => acc + food.macronutrients, 0) / selectedFoods.length;
     const micronutrients = selectedFoods.reduce((acc, food) => acc + food.micronutrients, 0) / selectedFoods.length;
+    // @ts-ignore
     const tags: Tag[] = selectedFoods.reduce((acc, food) => {
         if (food.tags) {
             return [...acc, ...food.tags];
         }
         return acc;
-    }, []);
+    }, [{tag: `${selectedFoods.length} Meal Item${selectedFoods.length > 1 ? 's' : ''}`, condition: 3}]);
     return (
         <div className={"flex flex-col gap-1 items-center p-6"}>
             <button className={"text-neutral-200 flex gap-1 justify-center items-center"}>Your Food Score <ChevronRight

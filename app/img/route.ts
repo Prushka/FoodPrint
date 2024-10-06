@@ -1,5 +1,4 @@
 
-
 import { NextResponse, NextRequest } from "next/server";
 import {classifyImage} from "@/app/img/img";
 

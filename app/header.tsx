@@ -17,9 +17,9 @@ import {useState} from "react";
 export default function Header() {
     const pathname = usePathname()
     const [open, setOpen] = useState(false)
-    return <header className={"fixed mt-5 w-full flex justify-center"}
+    return <header className={"fixed mt-5 w-full flex justify-center z-40"}
     >
-        <div className={"tracking-tight text-[0.925rem] flex gap-12 justify-between z-10 border border-neutral-800 " +
+        <div className={"backdrop-blur-sm bg-transparent tracking-tight text-[0.925rem] flex gap-12 justify-between border border-neutral-800 " +
             "left-[50%] text-neutral-200 py-3 px-5 rounded-xl items-center"}>
 
         <Link href={"/"} className={"flex gap-2 font-medium text-white justify-center items-center"}>
@@ -41,7 +41,7 @@ export default function Header() {
                     <CameraIcon size={16} strokeWidth={2}/>
                     Scan</Button>
                 <Dialog onOpenChange={setOpen} open={open}>
-                    <DialogContent className="max-w-none w-[90vw] h-[90vh] text-white flex flex-col">
+                    <DialogContent className="max-w-none w-[90vw] h-[90vh] overflow-auto text-white flex flex-col">
                         <DialogHeader>
                             <DialogTitle>Upload your meal!</DialogTitle>
                             <DialogDescription>

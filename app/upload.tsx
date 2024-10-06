@@ -19,7 +19,7 @@ import {Button} from "@/components/ui/button";
 import {useRecoilState} from "recoil";
 import {useToast} from "@/hooks/use-toast";
 
-export default function ImageClassifier({closeDialog}: { closeDialog: () => void }) {
+export default function ImageClassifier({closeDialog, read}: { closeDialog: any, read?: Food | null }) {
     const [file, setFile] = useState<File | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const [response, setResponse] = useState<string | null>(null);
@@ -38,17 +38,29 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
     };
 
     const food = useMemo(() => {
+        if (read) {
+            return read;
+        }
         if (!response) {
             return null;
         }
         try {
             const food = JSON.parse(response || '{}') as Food;
             food.date = Math.floor(Date.now() / 1000);
+            food.uuid = Math.random().toString(36).substring(7);
+            food.img = food.uuid + '.png';
+            const formData = new FormData();
+            formData.append("pfp", file as File);
+            fetch(`https://sparkle-t.muddy.ca/be/pfp/${food.uuid}`, {
+                method: 'POST',
+                body: formData
+            }).then(data => {
+            });
             return food;
         } catch (e) {
             return null;
         }
-    }, [response]);
+    }, [response, read]);
 
     const ingredientList = useMemo(() => {
         if (!food) {
@@ -88,7 +100,7 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
     }, [selectedIngredient, ingredientList]);
 
     const buttons = (
-        <div className={"flex gap-4"}>
+        read ? <></> : <div className={"flex gap-4"}>
 
             <form onSubmit={onSubmit}>
                 <label htmlFor={"img-upload"}>
@@ -153,18 +165,18 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
             );
         })
     }, [ingredientList]);
-    const { toast } = useToast()
+    const {toast} = useToast()
 
     return (
         <div className="h-full w-full flex justify-center items-center">
-            {image ?
+            {image || read ?
                 <div className={"w-full h-full grid grid-cols-10 gap-4"}>
                     <div
                         className={"col-span-3 flex flex-col justify-center items-center"}>
                         <div
                             className={"border border-dashed border-neutral-600 justify-center items-center p-4 flex flex-col gap-4"}>
                             <img
-                                src={image}
+                                src={image || `https://sparkle-t.muddy.ca/static/pfp/${read?.img}`}
                                 alt="An image to classify"
                                 className="object-contain w-full h-full"
                             />
@@ -173,10 +185,10 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                     </div>
                     <div
                         className={`w-full h-full flex-col col-span-7 flex items-center p-4 justify-center`}>
-                        <div id={"blob"} className={`relative ${!response ? 'blob animate-pulse' : 'blobt'}`}>
-                            {response ? ingredientTags : <></>}
+                        <div id={"blob"} className={`relative ${!food ? 'blob animate-pulse' : 'blobt'}`}>
+                            {food ? ingredientTags : <></>}
                         </div>
-                        {response ? <div className={"flex flex-col gap-5 mt-16 w-full"}>
+                        {food ? <div className={"flex flex-col gap-5 mt-16 w-full"}>
                             <Block className={"flex flex-col gap-5"}>
                                 <div className={"flex justify-between items-center"}>
 
@@ -190,7 +202,8 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                                         <p className={"text-sm text-neutral-300"}>Hover over ingredient to see their
                                             nutrition</p>
                                     </div>
-                                    {food?.calories && <div className={"flex gap-3 flex-row-reverse border border-neutral-700 p-2 px-3 rounded-md"}>
+                                    {food?.calories && <div
+                                        className={"flex gap-3 flex-row-reverse border border-neutral-700 p-2 px-3 rounded-md"}>
                                         <Tag
                                             tag={food.calories < 300 ? "Below 300" : food.calories < 600 ? "Below 600" : "Above 600"}
                                             condition={food.calories < 300 ? 2 : food.calories < 600 ? 1 : 0}
@@ -216,12 +229,12 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                                 </div>
                             </Block>
 
-                            <Button
+                            {!read && <Button
 
                                 variant={"secondary"}
                                 className={"flex gap-2 justify-center items-center"}
                                 type="submit"
-                                onClick={()=>{
+                                onClick={() => {
                                     console.log(food)
                                     setFoods((foods) => {
                                         if (food) {
@@ -238,7 +251,7 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                                 }}
                             >
                                 <CheckIcon size={16} strokeWidth={2}/>
-                                Add Meal</Button>
+                                Add Meal</Button>}
                         </div> : <div className={"mt-auto"}>
                             <PropagateLoader size={12} color={"#dedede"} loading/>
                         </div>}
