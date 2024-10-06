@@ -88,3 +88,49 @@ export default function Score({score = 70}: { score: number }) {
                 </ChartContainer>
     )
 }
+
+const dimmed = {
+    visitors: {
+        label: "Visitors",
+    },
+    safari: {
+        label: "Safari",
+        color: "#163F99",
+    },
+} satisfies ChartConfig
+
+export function ScoreSmall({score = 70, active}: { score: number, day: string, active: boolean }) {
+
+    const chartData = [
+        { browser: "safari", visitors: score, fill: "var(--color-safari)" },
+    ]
+    return (
+        <ChartContainer
+            config={active ? chartConfig: dimmed}
+            className="aspect-square w-8 h-8"
+        >
+            <RadialBarChart
+                data={chartData}
+                innerRadius={14}
+                outerRadius={21}
+                startAngle={270 - 360*score/100}
+                endAngle={270}
+            >
+                <PolarGrid
+                    gridType="circle"
+                    radialLines={false}
+                    stroke="none"
+                    className="first:fill-muted last:fill-background"
+                    polarRadius={[14, 13]}
+                />
+                <RadialBar
+
+                    isAnimationActive={false}
+                    dataKey="visitors" background cornerRadius={10} />
+                <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+
+                </PolarRadiusAxis>
+            </RadialBarChart>
+        </ChartContainer>
+    )
+}

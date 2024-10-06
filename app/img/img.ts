@@ -15,6 +15,13 @@ export const classifyImage = async (file: File) => {
 {
 "food": "string",
 "calories": number,
+"macronutrients": number,
+"micronutrients": number,
+"score": number,
+"similar_users": number,
+"percentile": number,
+"recommended": ["string"],
+"tags": [{"tag": "string", "condition": number}],
 "ingredients": [
 {
 "ingredient": "string",
@@ -29,7 +36,14 @@ export const classifyImage = async (file: File) => {
 ]
 }
 Guidelines:
-Calories should be a number representing the total caloric content of the food in cal unit.
+"calories" should be a number representing the total caloric content of the food in cal unit.
+"macronutrients" should be a number between 0 and 100, indicating the balance of macronutrients in the food (0 being low, 100 being high).
+"micronutrients" should be a number between 0 and 100, indicating the balance of micronutrients in the food (0 being low, 100 being high).
+"score" should be a number between 0 and 100, representing the overall nutritional quality of the food (0 being low, 100 being high).
+"similar_users" should be an estimated percentage of app users with similar dietary preferences.
+"percentile" should be an estimated number between 0 and 100, indicating the food's nutritional ranking compared to foods consumed by other users (0 being worse than every user, 100 being being better than every user).
+"recommended" should be an array of recommended food or ingredients based on the given food item to supplement the nutrition needs.
+"tags" should be an array of relevant tags for the food item that describe its dietary properties or health benefits or defining characteristic, condition should be 0, 1, or 2, indicating the positivity of the tag to the food item (0 being negative, 1 being moderate, 2 being positive).
 The "food" field should contain the name of the food item analyzed.
 Each ingredient should have a "probability" value between 0 and 1, indicating the likelihood of its presence in the food.
 The "nutrition" array for each ingredient should include relevant nutrients from this list: Protein, Carbohydrates, Fat, Fiber, Vitamin A, Vitamin C, Vitamin D, Vitamin E, Vitamin K, Calcium, Iron, Potassium, Sodium, Magnesium, Zinc, Omega-3, Folate, Vitamin B12, Phosphorus.
@@ -48,10 +62,11 @@ Ensure the JSON is valid and properly formatted.`},
             },
         ],
         stream: false,
-        max_tokens: 1000,
+        max_tokens: 3000,
         response_format: { "type": "json_object" }
     });
-    console.log(completion.choices[0]?.message?.content);
+    console.log(completion);
+
 
     return completion.choices[0]?.message?.content
 

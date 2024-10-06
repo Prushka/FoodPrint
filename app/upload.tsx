@@ -43,7 +43,7 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
         }
         try {
             const food = JSON.parse(response || '{}') as Food;
-            food.date = Date.now();
+            food.date = Math.floor(Date.now() / 1000);
             return food;
         } catch (e) {
             return null;
@@ -72,7 +72,6 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
         const result: { [key: string]: number } = {};
         for (const ingredient of ingredientList) {
             for (const nutrition of ingredient.nutrition) {
-                console.log(nutrition);
                 if (selectedIngredient === null || ingredient.ingredient === selectedIngredient.ingredient) {
                     if (result[nutrition.nutrient]) {
                         result[nutrition.nutrient] += nutrition.volume;
@@ -85,7 +84,6 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                 }
             }
         }
-        console.log(result);
         return result;
     }, [selectedIngredient, ingredientList]);
 
@@ -224,6 +222,7 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
                                 className={"flex gap-2 justify-center items-center"}
                                 type="submit"
                                 onClick={()=>{
+                                    console.log(food)
                                     setFoods((foods) => {
                                         if (food) {
                                             return [...foods, food];
@@ -234,7 +233,7 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
 
                                     toast({
                                         title: "Meal Added",
-                                        description: "Your meal has been added to your journal!",
+                                        description: `${upperFirst(food?.food)} has been added to your journal!`,
                                     })
                                 }}
                             >
@@ -254,4 +253,11 @@ export default function ImageClassifier({closeDialog}: { closeDialog: () => void
 
     );
 
+}
+
+export function upperFirst(str?: string) {
+    if (!str) {
+        return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
