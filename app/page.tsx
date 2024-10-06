@@ -197,14 +197,14 @@ function UploadPanel() {
                     text-neutral-400 flex flex-col gap-2 justify-center items-center hover:text-white cursor-pointer rounded-md">
                     <CloudUploadIcon size={56} strokeWidth={2}/>
                     <p className={"text-lg"}>Upload or take a photo of your meal</p>
-                    <p className={"text-sm"}>We'll analyze it for you!</p>
+                    <p className={"text-sm"}>We&apos;ll analyze it for you!</p>
                 </div>
                 <Dialog onOpenChange={setOpen} open={open}>
                     <DialogContent className="max-w-none w-[90vw] h-[90vh] overflow-auto text-white flex flex-col">
                         <DialogHeader>
                             <DialogTitle>Upload your meal!</DialogTitle>
                             <DialogDescription>
-                                Find out what's in your meal and how it contributes to your long-term food print.
+                                Find out what&apos;s in your meal and how it contributes to your long-term food print.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="flex flex-col justify-center items-center w-full h-full">
@@ -265,7 +265,11 @@ function UploadPanel() {
         </div>
     );
 }
-function unixToTimeOfDay(unixTimestamp) {
+function unixToTimeOfDay(unixTimestamp?: number) {
+    if (!unixTimestamp) {
+        return '';
+    }
+
     // Create a Date object from the Unix timestamp (convert seconds to milliseconds)
     const date = new Date(unixTimestamp * 1000);
 
@@ -322,8 +326,8 @@ function SummaryPanel() {
                     content={<span>
                     {calories}<span className={"text-base text-neutral-400"}> cal</span>
                     </span>}
-                    tag={calories < 1200 ? "Below 1000" : calories < 2000 ? "Below 2000" : "Above 2000"}
-                    condition={calories < 1000 ? 0 : calories < 2000 ? 2 : 0}
+                    tag={calories < 1200 ? "Below 1200" : calories < 2000 ? "Below 2000" : "Above 2000"}
+                    condition={calories < 1200 ? 0 : calories < 2000 ? 2 : 0}
                 />
                 <BlockMetrics
                     title={"Macronutrients"}

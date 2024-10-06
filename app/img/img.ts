@@ -2,10 +2,7 @@ import {OpenAI} from "openai";
 
 const openAi = new OpenAI({apiKey: process.env.OPENAI_API_KEY});
 
-export const classifyImage = async (file: File) => {
-    const encoded = await file
-        .arrayBuffer()
-        .then((buffer) => Buffer.from(buffer).toString("base64"));
+export const classifyImage = async (encoded: string) => {
     console.log("Sending image to OpenAI for classification");
     const completion = await openAi.chat.completions.create({
         model: "gpt-4o",

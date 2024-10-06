@@ -14,7 +14,11 @@ export async function POST(request: NextRequest) {
             { status: 400, statusText: "Bad Request" }
         );
     }
-    const response = await classifyImage(file);
+
+    const encoded = await file
+        .arrayBuffer()
+        .then((buffer) => Buffer.from(buffer).toString("base64"));
+    const response = await classifyImage(encoded);
 
     return NextResponse.json(response);
 }

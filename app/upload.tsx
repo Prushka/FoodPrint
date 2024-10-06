@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useMemo} from "react";
+import {useState, useMemo, useRef, useCallback} from "react";
 import {
     CameraIcon,
     CloudUploadIcon,
@@ -9,7 +9,7 @@ import {
     Tally2Icon,
     Tally3Icon,
     Tally4Icon,
-    CheckIcon
+    CheckIcon, MonitorXIcon, FocusIcon
 } from "lucide-react";
 import {PropagateLoader} from "react-spinners";
 import {Food, foodStore, Ingredient} from "@/app/states";
@@ -18,6 +18,19 @@ import Block from "@/app/block";
 import {Button} from "@/components/ui/button";
 import {useRecoilState} from "recoil";
 import {useToast} from "@/hooks/use-toast";
+import Webcam from "react-webcam";
+
+function dataURLtoFile(dataurl: string, filename: string) {
+    var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)?.[1],
+        bstr = atob(arr[arr.length - 1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+}
 
 export default function ImageClassifier({closeDialog, read}: { closeDialog: any, read?: Food | null }) {
     const [file, setFile] = useState<File | null>(null);
@@ -26,7 +39,21 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
     const [inputKey, setInputKey] = useState(new Date().toString());
     const [selectedIngredient, setSelectedIngredient] = useState<Ingredient | null>(null);
     const [foods, setFoods] = useRecoilState(foodStore);
+    const [camera, setCamera] = useState(false);
+    const webcamRef = useRef<any>(null);
+    const capture = useCallback(
+        () => {
+            const imageSrc = webcamRef.current?.getScreenshot();
+            onSubmit(dataURLtoFile(imageSrc, "upload.jpg")).then();
+            setCamera(false);
+        },
+        [webcamRef]
+    );
     const onSubmit = async (file: any) => {
+        setFile(file);
+        setImage(URL.createObjectURL(file));
+        setResponse(null);
+        setSelectedIngredient(null);
         const formData = new FormData();
         formData.append("file", file as File);
         fetch("/img", {
@@ -102,41 +129,55 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
     const buttons = (
         read ? <></> : <div className={"flex gap-4"}>
 
-            <form onSubmit={onSubmit}>
-                <label htmlFor={"img-upload"}>
-                    <div
-                        className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
-                        <ImageUpIcon size={16} strokeWidth={2}/>
-                        Upload from Device
-                    </div>
-                    <input
-                        id={"img-upload"}
-                        key={inputKey}
-                        type="file"
-                        accept="image/jpeg, image/png"
-                        className={"hidden"}
-                        onChange={(e) => {
-                            if (e.target.files?.length) {
-                                setFile(e.target?.files[0]);
-                                setImage(URL.createObjectURL(e.target?.files[0]));
-                                setResponse(null);
-                                setSelectedIngredient(null);
-                                onSubmit(e.target?.files[0]).then();
-                            } else {
-                                setFile(null);
-                                setImage(null);
-                                setSelectedIngredient(null);
-                                setResponse(null);
-                            }
-                        }}
-                    />
-                </label>
-            </form>
-            <div
-                className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
-                <CameraIcon size={16} strokeWidth={2}/>
-                Use Camera
-            </div>
+            {!camera ? <>
+                <form onSubmit={onSubmit}>
+                    <label htmlFor={"img-upload"}>
+                        <div
+                            className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
+                            <ImageUpIcon size={16} strokeWidth={2}/>
+                            Upload from Device
+                        </div>
+                        <input
+                            id={"img-upload"}
+                            key={inputKey}
+                            type="file"
+                            accept="image/jpeg, image/png"
+                            className={"hidden"}
+                            onChange={(e) => {
+                                if (e.target.files?.length) {
+                                    onSubmit(e.target?.files[0]).then();
+                                } else {
+                                    setFile(null);
+                                    setImage(null);
+                                    setSelectedIngredient(null);
+                                    setResponse(null);
+                                }
+                            }}
+                        />
+                    </label>
+                </form>
+                <div onClick={() => {
+                    setCamera(true)
+                    setImage(null)
+                }}
+                     className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
+                    <CameraIcon size={16} strokeWidth={2}/>
+                    Use Camera
+                </div>
+            </>: <>
+                <div onClick={capture}
+                     className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
+                    <FocusIcon size={16} strokeWidth={2}/>
+                    Capture
+                </div>
+                <div onClick={() => {
+                    setCamera(false)
+                }}
+                     className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
+                    <MonitorXIcon size={16} strokeWidth={2}/>
+                    Exit Camera
+                </div>
+            </>}
         </div>
     )
 
@@ -257,8 +298,16 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
                         </div>}
                     </div>
                 </div> : <div
-                    className={"w-[40rem] h-[20rem] border border-dashed border-neutral-400 rounded-lg flex flex-col gap-6 justify-center items-center"}>
-                    <CloudUploadIcon size={82} strokeWidth={2}/>
+                    className={`w-[50rem] h-[30rem] ${camera ? '' : 'border border-dashed border-neutral-400'} rounded-lg flex flex-col gap-6 justify-center items-center`}>
+
+                    {camera ? <Webcam
+                            audio={false}
+                            height={1080}
+                            screenshotFormat="image/jpeg"
+                            width={1920}
+                            ref={webcamRef}
+                        /> :
+                        <CloudUploadIcon size={82} strokeWidth={2}/>}
                     {buttons}
                 </div>
             }
