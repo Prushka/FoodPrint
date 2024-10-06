@@ -71,7 +71,7 @@ export function Nutrition() {
         }
     });
     return (
-        <ChartContainer config={chartConfig} className={"h-[17rem] w-full col-span-8"}>
+        <ChartContainer config={chartConfig} className={"h-[17rem] w-full col-span-7"}>
             <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false}/>
                 <XAxis

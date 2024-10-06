@@ -153,7 +153,7 @@ function DetailsPanel() {
                     </div>
                     <div className={"grid grid-cols-10 gap-8"}>
                         <Nutrition/>
-                        <div className={"border-l border-neutral-800 col-span-2 p-4 flex flex-col justify-center"}>
+                        <div className={"border-l border-neutral-800 col-span-3 p-4 flex flex-col justify-center"}>
                             <Row className={"py-2"} title={"Users with similar diet"}
                                  icon={<UsersRoundIcon size={16} strokeWidth={2}/>}
                                  content={<p>
@@ -228,7 +228,7 @@ function UploadPanel() {
                 </Dialog>
             </>}
             <div className={"flex w-full h-full"}>
-                <Block className={"h-[24rem] max-h-[24rem] overflow-auto px-6 "}>
+                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[32rem] max-h-[32rem]'} overflow-auto px-6 `}>
                     <div className={"flex flex-col gap-4"}>
                         <div className={"flex gap-2 items-center"}>
                             <VeganIcon size={16} strokeWidth={2}/>
@@ -345,7 +345,7 @@ function SummaryPanel() {
                     title={"Macronutrients"}
                     icon={<SaladIcon size={16} strokeWidth={2}/>}
                     content={<span>
-                        {macronutrients} <span className={"text-base text-neutral-400"}>%</span>
+                        {Math.floor(macronutrients)} <span className={"text-base text-neutral-400"}>%</span>
                     </span>}
                     tag={macronutrients < 20 ? "Unbalanced" : macronutrients < 40 ? "Unhealthy" : "Balanced"}
                     condition={macronutrients < 20 ? 0 : macronutrients < 40 ? 1 : 3}
@@ -354,7 +354,7 @@ function SummaryPanel() {
                     title={"Micronutrients"}
                     icon={<AppleIcon size={16} strokeWidth={2}/>}
                     content={<span>
-                    {micronutrients}
+                    {Math.floor(micronutrients)}
                     </span>}
                     tag={micronutrients < 20 ? "Inadequate" : micronutrients < 40 ? "Slightly Inadequate" : "Adequate"}
                     condition={micronutrients < 20 ? 0 : micronutrients < 40 ? 1 : 3}
