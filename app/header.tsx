@@ -45,7 +45,7 @@ export default function Header() {
                         <DialogHeader>
                             <DialogTitle>Upload your meal!</DialogTitle>
                             <DialogDescription>
-                                Find out what's in your meal and how it contributes to your long-term food print.
+                                Find out what&apos;s in your meal and how it contributes to your long-term food print.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="flex flex-col justify-center items-center w-full h-full">

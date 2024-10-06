@@ -1,5 +1,5 @@
 import {atom, RecoilState} from "recoil";
-import {getTodayFormatted} from "@/app/page";
+import {getTodayFormatted} from "@/app/utils";
 
 export const dateStore: RecoilState<string> = atom({
     key: 'dateStore',

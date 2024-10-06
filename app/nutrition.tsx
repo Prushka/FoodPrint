@@ -10,10 +10,9 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
-import {useMemo} from "react";
 import {useRecoilState} from "recoil";
 import {aggregateNutrition, dateStore, foodStore} from "@/app/states";
-import {unixToDateFormat} from "@/app/page";
+import {unixToDateFormat} from "@/app/utils";
 
 const nutrition = [
     {"name": "Protein", "short": "Prot"},
