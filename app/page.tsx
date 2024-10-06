@@ -118,6 +118,18 @@ function deduplicateArray(arr: string[]) {
     });
 }
 
+function deduplicateTagArray(arr: Tag[]) {
+    const seen = new Set();
+    return arr.filter(item => {
+        const camelCased = formatToCamelCase(item.tag);
+        if (!seen.has(camelCased)) {
+            seen.add(camelCased);
+            return true;
+        }
+        return false;
+    });
+}
+
 function DetailsPanel() {
     const [foods] = useRecoilState(foodStore);
     const [selectedDate, setSelectedDate] = useRecoilState(dateStore);
@@ -216,7 +228,7 @@ function UploadPanel() {
                 </Dialog>
             </>}
             <div className={"flex w-full h-full"}>
-                <Block className={"min-h-[20rem] px-6 "}>
+                <Block className={"h-[24rem] max-h-[24rem] overflow-auto px-6 "}>
                     <div className={"flex flex-col gap-4"}>
                         <div className={"flex gap-2 items-center"}>
                             <VeganIcon size={16} strokeWidth={2}/>
@@ -308,12 +320,12 @@ function SummaryPanel() {
     const macronutrients = selectedFoods.reduce((acc, food) => acc + food.macronutrients, 0) / selectedFoods.length;
     const micronutrients = selectedFoods.reduce((acc, food) => acc + food.micronutrients, 0) / selectedFoods.length;
     // @ts-ignore
-    const tags: Tag[] = selectedFoods.reduce((acc, food) => {
+    const tags: Tag[] = deduplicateTagArray(selectedFoods.reduce((acc, food) => {
         if (food.tags) {
             return [...acc, ...food.tags];
         }
         return acc;
-    }, [{tag: `${selectedFoods.length} Meal Item${selectedFoods.length > 1 ? 's' : ''}`, condition: 3}]);
+    }, [{tag: `${selectedFoods.length} Meal Item${selectedFoods.length > 1 ? 's' : ''}`, condition: 3}]));
     return (
         <div className={"flex flex-col gap-1 items-center p-6"}>
             <button className={"text-neutral-200 flex gap-1 justify-center items-center"}>Your Food Score <ChevronRight
