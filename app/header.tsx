@@ -12,9 +12,11 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import ImageClassifier from "@/app/upload";
+import {useState} from "react";
 
 export default function Header() {
     const pathname = usePathname()
+    const [open, setOpen] = useState(false)
     return <header className={"fixed mt-5 w-full flex justify-center"}
     >
         <div className={"tracking-tight text-[0.925rem] flex gap-12 justify-between z-10 border border-neutral-800 " +
@@ -33,12 +35,12 @@ export default function Header() {
                     Lucas</Button>
 
 
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button className={"bg-neutral-50 hover:bg-neutral-200 text-neutral-900 hover:text-black h-8 px-3 flex justify-center items-center gap-2"}>
-                            <CameraIcon size={16} strokeWidth={2}/>
-                            Scan</Button>
-                    </DialogTrigger>
+                <Button
+                    onClick={() => setOpen(true)}
+                    className={"bg-neutral-50 hover:bg-neutral-200 text-neutral-900 hover:text-black h-8 px-3 flex justify-center items-center gap-2"}>
+                    <CameraIcon size={16} strokeWidth={2}/>
+                    Scan</Button>
+                <Dialog onOpenChange={setOpen} open={open}>
                     <DialogContent className="max-w-none w-[90vw] h-[90vh] text-white flex flex-col">
                         <DialogHeader>
                             <DialogTitle>Upload your meal!</DialogTitle>
@@ -47,11 +49,10 @@ export default function Header() {
                             </DialogDescription>
                         </DialogHeader>
                         <div className="flex flex-col justify-center items-center w-full h-full">
-                            <ImageClassifier/>
+                            <ImageClassifier closeDialog={()=>{
+                                setOpen(false)
+                            }}/>
                         </div>
-                        <DialogFooter>
-                            <Button variant={"secondary"} type="submit">Add Meal</Button>
-                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </div>

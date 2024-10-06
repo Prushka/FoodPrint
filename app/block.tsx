@@ -7,9 +7,9 @@ export default function Block({children, className}: any) {
     )
 }
 
-export function BlockMetrics({title, icon, content, tag, condition}: any){
+export function BlockMetrics({title, icon, content, tag, condition, className}: any){
     return (
-        <Block className={"flex flex-col gap-3 font-medium"}>
+        <Block className={`flex flex-col gap-3 font-medium ${className}`}>
             <div className={"flex gap-1.5 items-center text-sm"}>
                 {icon}
                 <p>{title}</p>

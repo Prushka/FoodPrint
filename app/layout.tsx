@@ -1,5 +1,6 @@
 import "./globals.css";
 import RecoilRootWrapper from "@/app/RecoilRootWrapper";
+import {Toaster} from "@/components/ui/toaster";
 
 
 export default function RootLayout({
@@ -12,6 +13,7 @@ export default function RootLayout({
         <body className={"flex flex-col dark"}>
         <RecoilRootWrapper>
             {children}
+            <Toaster />
         </RecoilRootWrapper>
         </body>
         </html>

@@ -2,7 +2,9 @@ import {atom, RecoilState} from "recoil";
 
 export const foodStore: RecoilState<Food[]> = atom({
     key: 'foodStore',
-    default: [],
+    default: [
+
+    ],
 });
 
 export interface NutritionInfo {
@@ -19,5 +21,6 @@ export interface Ingredient {
 export interface Food {
     food: string;
     ingredients: Ingredient[];
-    date: string;
+    date: number;
+    calories: number;
 }

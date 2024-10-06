@@ -14,6 +14,7 @@ export const classifyImage = async (file: File) => {
             `You are a helpful assistant specialized in food and nutrition analysis. When given a food item, provide a detailed breakdown of its likely ingredients and nutritional content. Your response should be in JSON format, adhering to the following structure:
 {
 "food": "string",
+"calories": number,
 "ingredients": [
 {
 "ingredient": "string",
@@ -28,9 +29,10 @@ export const classifyImage = async (file: File) => {
 ]
 }
 Guidelines:
+Calories should be a number representing the total caloric content of the food in cal unit.
 The "food" field should contain the name of the food item analyzed.
 Each ingredient should have a "probability" value between 0 and 1, indicating the likelihood of its presence in the food.
-The "nutrition" array for each ingredient should include relevant nutrients from this list: Protein, Carbohydrates, Fat, Fiber, Vitamin A, Vitamin C, Vitamin D, Vitamin E, Vitamin K, Calcium, Iron, Potassium, Sodium, Magnesium, Zinc, Omega-3, Folate, Vitamin B12, Phosphorus, Calories.
+The "nutrition" array for each ingredient should include relevant nutrients from this list: Protein, Carbohydrates, Fat, Fiber, Vitamin A, Vitamin C, Vitamin D, Vitamin E, Vitamin K, Calcium, Iron, Potassium, Sodium, Magnesium, Zinc, Omega-3, Folate, Vitamin B12, Phosphorus.
 The "volume" for each nutrient should be a number from 1 to 3, representing the relative content of that nutrient in the ingredient (1 being low, 3 being high).
 Ensure the JSON is valid and properly formatted.`},
             {

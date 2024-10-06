@@ -8,12 +8,12 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
 import ImageClassifier from "@/app/upload";
 import Header from "@/app/header";
 import {
-    AppleIcon, BetweenHorizonalStartIcon,
+    AppleIcon, BetweenHorizonalStartIcon, CameraIcon,
     ChevronRight,
     CloudUploadIcon,
     CookieIcon, LeafyGreenIcon,
@@ -27,6 +27,7 @@ import Block, {BlockMetrics, Row} from "@/app/block";
 import {Nutrition} from "@/app/nutrition";
 import {Button} from "@/components/ui/button";
 import {Sparkle} from "@/app/sparkle";
+import {useState} from "react";
 
 export default function Home() {
     return (
@@ -56,11 +57,13 @@ function DetailsPanel() {
                     <div className={"grid grid-cols-10 gap-8"}>
                         <Nutrition/>
                         <div className={"border-l border-neutral-800 col-span-2 p-4 flex flex-col justify-center"}>
-                            <Row className={"py-2"} title={"Users with similar diet"} icon={<UsersRoundIcon size={16} strokeWidth={2}/>}
+                            <Row className={"py-2"} title={"Users with similar diet"}
+                                 icon={<UsersRoundIcon size={16} strokeWidth={2}/>}
                                  content={<p>
                                      22
                                      <span className={"text-neutral-200 text-sm"}>%</span></p>}/>
-                            <Row className={"border-t border-neutral-800 py-2"} title={"Percentile Nutrition"} icon={<BetweenHorizonalStartIcon size={16} strokeWidth={2}/>}
+                            <Row className={"border-t border-neutral-800 py-2"} title={"Percentile Nutrition"}
+                                 icon={<BetweenHorizonalStartIcon size={16} strokeWidth={2}/>}
                                  content={<p>
                                      24
                                      <span className={"text-neutral-200 text-sm"}>th</span></p>}/>
@@ -70,19 +73,19 @@ function DetailsPanel() {
                                         className="h-3 w-3"
                                         hasGradient
                                         stops={[
-                                            { color: `#40c9ff` },
-                                            { color: `#e81cff` },
+                                            {color: `#40c9ff`},
+                                            {color: `#e81cff`},
                                         ]}
                                     />
                                 </div>
                             } icon={<LeafyGreenIcon size={16} strokeWidth={2}/>}
-                                    content={
-                                <div className={"flex gap-2 mt-1 flex-wrap"}>
-                                    {recommendedDiet.map((item, index) => (
-                                        <Tag key={`${index}`} tag={item} condition={3}/>
-                                    ))}
-                                </div>
-                                    }/>
+                                 content={
+                                     <div className={"flex gap-2 mt-1 flex-wrap"}>
+                                         {recommendedDiet.map((item, index) => (
+                                             <Tag key={`${index}`} tag={item} condition={3}/>
+                                         ))}
+                                     </div>
+                                 }/>
                         </div>
                     </div>
                 </div>
@@ -93,18 +96,17 @@ function DetailsPanel() {
 
 
 function UploadPanel() {
+    const [open, setOpen] = useState(false)
     return (
         <>
-
-            <Dialog>
-                <DialogTrigger asChild>
-                    <div
-                        className="text-neutral-400 flex flex-col gap-2 justify-center items-center border-r border-neutral-800 hover:text-white cursor-pointer">
-                        <CloudUploadIcon size={56} strokeWidth={2}/>
-                        <p className={"text-lg"}>Upload or take a photo of your meal</p>
-                        <p className={"text-sm"}>We'll analyze it for you!</p>
-                    </div>
-                </DialogTrigger>
+            <div
+                onClick={() => setOpen(true)}
+                className="text-neutral-400 flex flex-col gap-2 justify-center items-center border-r border-neutral-800 hover:text-white cursor-pointer">
+                <CloudUploadIcon size={56} strokeWidth={2}/>
+                <p className={"text-lg"}>Upload or take a photo of your meal</p>
+                <p className={"text-sm"}>We'll analyze it for you!</p>
+            </div>
+            <Dialog onOpenChange={setOpen} open={open}>
                 <DialogContent className="max-w-none w-[90vw] h-[90vh] text-white flex flex-col">
                     <DialogHeader>
                         <DialogTitle>Upload your meal!</DialogTitle>
@@ -113,11 +115,10 @@ function UploadPanel() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-col justify-center items-center w-full h-full">
-                        <ImageClassifier/>
+                        <ImageClassifier closeDialog={() => {
+                            setOpen(false)
+                        }}/>
                     </div>
-                    <DialogFooter>
-                        <Button variant={"secondary"} type="submit">Add Meal</Button>
-                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </>
@@ -165,21 +166,21 @@ function SummaryPanel() {
                 <div className={"flex gap-2 flex-wrap"}>
                     {tags.map((tag) => (
                         <Tag key={tag} tag={tag} condition={Math.floor(Math.random() * 4)}/>
-                        ))}
+                    ))}
                 </div>
             </Block>
         </div>
     )
 }
 
-export function Tag({className, tag, condition, style, large = false, onMouseEnter, onMouseLeave} : any){
+export function Tag({className, tag, condition, style, large = false, onMouseEnter, onMouseLeave}: any) {
     return (
         <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}
-            style={style} className={`${condition == 0 ? 'bg-[#331E25]' : condition == 1 ? 'bg-[#2E2C1D]' :
+             style={style} className={`${condition == 0 ? 'bg-[#331E25]' : condition == 1 ? 'bg-[#2E2C1D]' :
             condition == 2 ?
-            'bg-[#1D2C2B]' : 'bg-neutral-800'} 
-                 ${condition == 0 ? 'text-[#FB6591]' : condition == 1 ? 'text-[#CBC160]' : condition == 2 ? 'text-[#5CC8C3]':
-                     'text-neutral-200'}
+                'bg-[#1D2C2B]' : 'bg-neutral-800'} 
+                 ${condition == 0 ? 'text-[#FB6591]' : condition == 1 ? 'text-[#CBC160]' : condition == 2 ? 'text-[#5CC8C3]' :
+            'text-neutral-200'}
                  rounded-md ${large ? 'p-2 px-3 text-sm' : 'p-1 px-2 text-xs'}  ${className}`}
         >{tag}</div>
     )

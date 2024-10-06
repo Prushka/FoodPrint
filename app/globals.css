@@ -145,8 +145,8 @@ a:hover, button:hover {
   display: block;
   min-height: 200px;
   min-width: 200px;
-  width: 40vh;
-  height: 40vh;
+  width: 400px;
+  height: 400px;
   background-color: var(--blob);
   box-shadow: var(--shades);
   background-size: 1600% 1600%;
