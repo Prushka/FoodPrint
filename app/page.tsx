@@ -25,11 +25,19 @@ import Score, {ScoreSmall} from "@/app/score";
 import Block, {BlockMetrics, Row} from "@/app/block";
 import {Nutrition} from "@/app/nutrition";
 import {Sparkle} from "@/app/sparkle";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useRecoilState} from "recoil";
 import {dateStore, Food, foodStore, type Tag} from "@/app/states";
 
 export default function Home() {
+    const [foods, setFoods] = useRecoilState(foodStore);
+    useEffect(() => {
+        if (foods.length === 0) {
+            fetch('/food').then(response => response.json()).then(data => {
+                setFoods(data)
+            })
+        }
+    }, [setFoods, foods]);
     return (
         <main className={"flex flex-col gap-1 w-full h-full"}>
             <Header/>
@@ -228,7 +236,7 @@ function UploadPanel() {
                 </Dialog>
             </>}
             <div className={"flex w-full h-full"}>
-                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[32rem] max-h-[32rem]'} overflow-auto px-6 `}>
+                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[36rem] max-h-[36rem]'} overflow-auto px-6 `}>
                     <div className={"flex flex-col gap-4"}>
                         <div className={"flex gap-2 items-center"}>
                             <VeganIcon size={16} strokeWidth={2}/>

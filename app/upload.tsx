@@ -284,11 +284,15 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
                                         return foods;
                                     })
                                     closeDialog();
-
-                                    toast({
-                                        title: "Meal Added",
-                                        description: `${upperFirst(food?.food)} has been added to your journal!`,
+                                    fetch('/food', {method: 'POST',
+                                        body: JSON.stringify(food),
+                                    }).then(response => response.json()).then(data => {
+                                        toast({
+                                            title: "Meal Added",
+                                            description: `${upperFirst(food?.food)} has been added to your journal!`,
+                                        })
                                     })
+
                                 }}
                             >
                                 <CheckIcon size={16} strokeWidth={2}/>
