@@ -25,8 +25,8 @@ import {
 import Score from "@/app/score";
 import Block, {BlockMetrics, Row} from "@/app/block";
 import {Nutrition} from "@/app/nutrition";
-import Sparkle from "@/sparkle";
 import {Button} from "@/components/ui/button";
+import {Sparkle} from "@/app/sparkle";
 
 export default function Home() {
     return (
@@ -43,7 +43,7 @@ export default function Home() {
 
 function DetailsPanel() {
     const recommendedDiet = [
-        "apple", "grape", "apple", "grape", "apple", "grape"
+        "apple", "grape"
     ]
     return (
         <div className={"flex gap-2 items-center p-6 col-span-2"}>
@@ -78,8 +78,8 @@ function DetailsPanel() {
                             } icon={<LeafyGreenIcon size={16} strokeWidth={2}/>}
                                     content={
                                 <div className={"flex gap-2 mt-1 flex-wrap"}>
-                                    {recommendedDiet.map((item) => (
-                                        <Tag key={item} tag={item} condition={3}/>
+                                    {recommendedDiet.map((item, index) => (
+                                        <Tag key={`${index}`} tag={item} condition={3}/>
                                     ))}
                                 </div>
                                     }/>
@@ -116,7 +116,7 @@ function UploadPanel() {
                         <ImageClassifier/>
                     </div>
                     <DialogFooter>
-                        <Button variant={"secondary"} type="submit">Submit food</Button>
+                        <Button variant={"secondary"} type="submit">Add Meal</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -137,7 +137,7 @@ function SummaryPanel() {
                     title={"Calories"}
                     icon={<CookieIcon size={16} strokeWidth={2}/>}
                     content={<span>
-                    3100 <span className={"text-base text-neutral-400"}>kcal</span>
+                    3100 <span className={"text-base text-neutral-400"}>cal</span>
                     </span>}
                     tag={"Over 2500"}
                     condition={0}
@@ -172,14 +172,15 @@ function SummaryPanel() {
     )
 }
 
-function Tag({className, tag, condition} : any){
+export function Tag({className, tag, condition, style, large = false, onMouseEnter, onMouseLeave} : any){
     return (
-        <div key={tag} className={`${condition == 0 ? 'bg-[#331E25]' : condition == 1 ? 'bg-[#2E2C1D]' :
+        <div onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}
+            style={style} className={`${condition == 0 ? 'bg-[#331E25]' : condition == 1 ? 'bg-[#2E2C1D]' :
             condition == 2 ?
             'bg-[#1D2C2B]' : 'bg-neutral-800'} 
                  ${condition == 0 ? 'text-[#FB6591]' : condition == 1 ? 'text-[#CBC160]' : condition == 2 ? 'text-[#5CC8C3]':
                      'text-neutral-200'}
-                 rounded-md p-1 px-2 text-xs ${className}`}
+                 rounded-md ${large ? 'p-2 px-3 text-sm' : 'p-1 px-2 text-xs'}  ${className}`}
         >{tag}</div>
     )
 }

@@ -1,7 +1,17 @@
 import Link from "next/link";
-import {CameraIcon, EggFriedIcon, UserPenIcon} from "lucide-react";
+import {CameraIcon, CloudUploadIcon, EggFriedIcon, UserPenIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {usePathname} from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
+import ImageClassifier from "@/app/upload";
 
 export default function Header() {
     const pathname = usePathname()
@@ -21,9 +31,29 @@ export default function Header() {
                 <Button className={"bg-[#28282C] hover:bg-[#323232] text-neutral-100 h-8 px-3 flex justify-center items-center gap-2"}>
                     <UserPenIcon size={16} strokeWidth={2}/>
                     Lucas</Button>
-                <Button className={"bg-neutral-50 hover:bg-neutral-200 text-neutral-900 hover:text-black h-8 px-3 flex justify-center items-center gap-2"}>
-                    <CameraIcon size={16} strokeWidth={2}/>
-                    Scan</Button>
+
+
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className={"bg-neutral-50 hover:bg-neutral-200 text-neutral-900 hover:text-black h-8 px-3 flex justify-center items-center gap-2"}>
+                            <CameraIcon size={16} strokeWidth={2}/>
+                            Scan</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-none w-[90vw] h-[90vh] text-white flex flex-col">
+                        <DialogHeader>
+                            <DialogTitle>Upload your meal!</DialogTitle>
+                            <DialogDescription>
+                                Find out what's in your meal and how it contributes to your long-term food print.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex flex-col justify-center items-center w-full h-full">
+                            <ImageClassifier/>
+                        </div>
+                        <DialogFooter>
+                            <Button variant={"secondary"} type="submit">Add Meal</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     </header>

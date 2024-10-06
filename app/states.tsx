@@ -5,18 +5,18 @@ export const foodStore: RecoilState<Food[]> = atom({
     default: [],
 });
 
-interface NutritionInfo {
-    nutrition: string;
+export interface NutritionInfo {
+    nutrient: string;
     volume: number;
 }
 
-interface Ingredient {
+export interface Ingredient {
     ingredient: string;
     probability: number;
     nutrition: NutritionInfo[];
 }
 
-interface Food {
+export interface Food {
     food: string;
     ingredients: Ingredient[];
     date: string;
