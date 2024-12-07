@@ -1,5 +1,7 @@
 import {Food} from "@/app/states";
 
+const shift = 5805303 - 604800;
+
 export const foodBank : Food[] = [
     {
         "food": "Balanced Plate",
@@ -114,7 +116,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727613951,
+        "date": shift +1727613951,
         "uuid": "e8atjg",
         "img": "e8atjg.png"
     },
@@ -197,7 +199,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727600351,
+        "date": shift +1727600351,
         "uuid": "evfffa",
         "img": "evfffa.png"
     },
@@ -311,7 +313,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727700351,
+        "date": shift +1727700351,
         "uuid": "xsk8b5",
         "img": "xsk8b5.png"
     },
@@ -413,7 +415,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727686751,
+        "date": shift +1727686751,
         "uuid": "akgcad",
         "img": "akgcad.png"
     },
@@ -535,7 +537,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727786751,
+        "date": shift +1727786751,
         "uuid": "v5wtu8",
         "img": "v5wtu8.png"
     },
@@ -642,7 +644,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727773151,
+        "date": shift +1727773151,
         "uuid": "raxt3r",
         "img": "raxt3r.png"
     },
@@ -747,7 +749,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727873151,
+        "date": shift +1727873151,
         "uuid": "uib7pc",
         "img": "uib7pc.png"
     },
@@ -868,7 +870,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727859551,
+        "date": shift +1727859551,
         "uuid": "ot5lx8",
         "img": "ot5lx8.png"
     },
@@ -975,7 +977,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727959551,
+        "date": shift +1727959551,
         "uuid": "mtxxo7",
         "img": "mtxxo7.png"
     },
@@ -1050,7 +1052,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1727945951,
+        "date": shift +1727945951,
         "uuid": "en462d",
         "img": "en462d.png"
     },
@@ -1125,7 +1127,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1728045951,
+        "date": shift +1728045951,
         "uuid": "en462d",
         "img": "en462d.png"
     },
@@ -1244,7 +1246,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1728032351,
+        "date": shift +1728032351,
         "uuid": "0s2kxr",
         "img": "0s2kxr.png"
     },
@@ -1347,7 +1349,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1728132351,
+        "date": shift +1728132351,
         "uuid": "bhiu4g",
         "img": "bhiu4g.png"
     },
@@ -1448,7 +1450,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1728118751,
+        "date": shift +1728118751,
         "uuid": "7ohe5o",
         "img": "7ohe5o.png"
     },
@@ -1533,7 +1535,7 @@ export const foodBank : Food[] = [
                 ]
             }
         ],
-        "date": 1728216692,
+        "date": shift +1728216692,
         "uuid": "yir5om",
         "img": "yir5om.png"
     }

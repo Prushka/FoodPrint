@@ -127,14 +127,14 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
     }, [selectedIngredient, ingredientList]);
 
     const buttons = (
-        read ? <></> : <div className={"flex gap-4"}>
+        read ? <></> : <div className={"flex gap-4 max-md:flex-col"}>
 
             {!camera ? <>
                 <form onSubmit={onSubmit}>
                     <label htmlFor={"img-upload"}>
                         <div
                             className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
-                            <ImageUpIcon size={16} strokeWidth={2}/>
+                            <ImageUpIcon className={"shrink-0"} size={16} strokeWidth={2}/>
                             Upload from Device
                         </div>
                         <input
@@ -161,7 +161,7 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
                     setImage(null)
                 }}
                      className={"cursor-pointer flex gap-2 justify-center items-center text-sm p-2 px-4 border border-neutral-800 rounded-md hover:bg-neutral-800"}>
-                    <CameraIcon size={16} strokeWidth={2}/>
+                    <CameraIcon className={"shrink-0"} size={16} strokeWidth={2}/>
                     Use Camera
                 </div>
             </>: <>
@@ -185,8 +185,14 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
         const count = ingredientList.length;
         const rows = Math.floor(Math.sqrt(count));
         const cols = Math.ceil(count / rows);
-        const cellWidth = 400 / cols;
-        const cellHeight = 400 / rows;
+        let width = 400;
+        let height = 400;
+        if (window.innerWidth < 768) {
+            width = 200;
+            height = 200;
+        }
+        const cellWidth = width / cols;
+        const cellHeight = height / rows;
 
         return ingredientList.map((ingredient, index) => {
             const row = Math.floor(index / cols);
@@ -209,9 +215,9 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
     const {toast} = useToast()
 
     return (
-        <div className="h-full w-full flex justify-center items-center">
+        <div className="md:h-full w-full flex justify-center items-center">
             {image || read ?
-                <div className={"w-full h-full grid grid-cols-10 gap-4"}>
+                <div className={"w-full grid grid-cols-10 gap-4 max-md:flex max-md:flex-col"}>
                     <div
                         className={"col-span-3 flex flex-col justify-center items-center"}>
                         <div
@@ -225,12 +231,12 @@ export default function ImageClassifier({closeDialog, read}: { closeDialog: any,
                         </div>
                     </div>
                     <div
-                        className={`w-full h-full flex-col col-span-7 flex items-center p-4 justify-center`}>
-                        <div id={"blob"} className={`relative ${!food ? 'blob animate-pulse' : 'blobt'}`}>
+                        className={`w-full md:h-full flex-col col-span-7 flex items-center p-4 max-md:p-0 justify-center`}>
+                        <div id={"blob"} className={`relative max-md:before:max-h-[200px] max-md:before:max-w-[200px] ${!food ? 'blob animate-pulse' : 'blobt'}`}>
                             {food ? ingredientTags : <></>}
                         </div>
                         {food ? <div className={"flex flex-col gap-5 mt-16 w-full"}>
-                            <Block className={"flex flex-col gap-5"}>
+                            <Block className={"flex flex-col gap-5 md:h-[11rem]"}>
                                 <div className={"flex justify-between items-center"}>
 
                                     <div className={"flex flex-col gap-0"}>

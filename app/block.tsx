@@ -11,7 +11,9 @@ export function BlockMetrics({title, icon, content, tag, condition, className}: 
     return (
         <Block className={`flex flex-col gap-3 font-medium ${className}`}>
             <div className={"flex gap-1.5 items-center text-sm"}>
-                {icon}
+                <div className={"shrink-0"}>
+                    {icon}
+                </div>
                 <p>{title}</p>
             </div>
             <div className={"flex gap-1 flex-col items-start"}>

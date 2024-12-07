@@ -37,14 +37,12 @@ export default function Home() {
         }
     }, [setFoods, foods]);
     return (
-        <main className={"flex flex-col gap-1 w-full h-full"}>
+        <main className={"grid grid-cols-2 max-md:flex max-md:flex-col w-full justify-center mt-[6.5rem]"}>
             <Header/>
-            <div className={"grid grid-cols-2 w-full h-full justify-center mt-[6.5rem]"}>
-                <Calender/>
-                <UploadPanel/>
-                <SummaryPanel/>
-                <DetailsPanel/>
-            </div>
+            <Calender/>
+            <UploadPanel/>
+            <SummaryPanel/>
+            <DetailsPanel/>
         </main>
     );
 }
@@ -135,19 +133,19 @@ function DetailsPanel() {
     const percentile = selectedFoods.reduce((acc, food) => acc + food.percentile, 0) / selectedFoods.length;
     return (
         <div className={"flex gap-2 items-center p-6 col-span-2"}>
-            <Block className={"min-h-[20rem] px-6"}>
+            <Block className={"min-h-[24rem] px-6"}>
                 <div className={"flex flex-col gap-4"}>
                     <div className={"flex gap-2 items-center"}>
                         <VeganIcon size={16} strokeWidth={2}/>
                         <div className={"text-lg"}>Nutrition</div>
                     </div>
-                    <div className={"grid grid-cols-10 gap-8"}>
+                    <div className={"grid grid-cols-10 gap-8 max-md:flex max-md:flex-col"}>
                         <Nutrition/>
                         <div className={"border-l border-neutral-800 col-span-3 p-4 flex flex-col justify-center"}>
                             <Row className={"py-2"} title={"Users with similar diet"}
                                  icon={<UsersRoundIcon size={16} strokeWidth={2}/>}
                                  content={<p>
-                                     {similarUsers}
+                                     {Math.floor(similarUsers)}
                                      <span className={"text-neutral-200 text-sm"}>%</span></p>}/>
                             <Row className={"border-t border-neutral-800 py-2"} title={"Percentile Nutrition"}
                                  icon={<BetweenHorizonalStartIcon size={16} strokeWidth={2}/>}
@@ -218,7 +216,7 @@ function UploadPanel() {
                 </Dialog>
             </>}
             <div className={"flex w-full h-full"}>
-                <Block className={`${today === selectedDate ? 'h-[24rem] max-h-[24rem]' : 'h-[36rem] max-h-[36rem]'}  transition-none overflow-auto px-6 `}>
+                <Block className={`${today === selectedDate ? 'h-[18rem]' : 'h-[32rem]'}  transition-none overflow-auto px-6 `}>
                     <div className={"flex flex-col gap-4"}>
                         <div className={"flex gap-2 items-center"}>
                             <VeganIcon size={16} strokeWidth={2}/>
@@ -230,13 +228,13 @@ function UploadPanel() {
                                      setSelectedFood(food);
                                      setOpen2(true);
                                  }}
-                                 className={"cursor-pointer flex gap-2 items-center w-full justify-between border border-neutral-800 p-2 px-4 rounded-md " +
+                                 className={"cursor-pointer flex gap-8 items-center w-full justify-between border border-neutral-800 p-2 px-4 rounded-md " +
                                      "hover:bg-neutral-900 hover:border-neutral-700"}>
-                                <img src={`https://sparkle-t.muddy.ca/static/pfp/${food?.img}`} alt={food.food} className={"w-24 h-16 rounded-md object-cover"}/>
+                                <img src={`https://sparkle-t.muddy.ca/static/pfp/${food?.img}`} alt={food.food} className={"w-24 h-16 rounded-md object-cover shrink-0"}/>
                                 <div className={"flex flex-col gap-2 items-end"}>
                                     <div
                                         className={"text-sm font-medium text-neutral-200"}>{formatToCamelCase(food.food)}</div>
-                                    <div className={"flex gap-1"}>{food.ingredients.map((ingredient, index) => (
+                                    <div className={"flex gap-1  flex-wrap justify-end"}>{food.ingredients.map((ingredient, index) => (
                                 <Tag key={index} tag={formatToCamelCase(ingredient.ingredient)} condition={3}/>
                             ))}
                                 <Tag key={index} tag={`${food.calories} cal`} condition={3}/>
@@ -308,7 +306,7 @@ function SummaryPanel() {
             <button className={"text-neutral-200 flex gap-1 justify-center items-center"}>Your Food Score <ChevronRight
                 size={22}/></button>
             <Score score={selectedFoods.reduce((acc, food) => acc + food.score, 0) / selectedFoods.length}/>
-            <div className={"grid grid-cols-3 mt-4 w-full gap-4"}>
+            <div className={"grid grid-cols-3 max-md:flex max-md:flex-col mt-4 w-full gap-4"}>
                 <BlockMetrics
                     title={"Calories"}
                     icon={<CookieIcon size={16} strokeWidth={2}/>}
